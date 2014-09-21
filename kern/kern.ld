@@ -74,6 +74,11 @@ SECTIONS {
 		*(COMMON);
 	}
 
+	/* The initial pagetable goes in its own 16K aligned section */
+	.pagetable ALIGN(16K) : AT(ADDR(.pagetable) - 0xC0000000) {
+		*(.pagetable);
+	}
+
 	__kern_bss_size = SIZEOF(.bss);
 	__kern_size = __kern_bss_start - __kern_code_start;
 

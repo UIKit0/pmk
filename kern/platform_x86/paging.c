@@ -1,10 +1,31 @@
 #include "x86.h"
 #include "paging_types.h"
 
+#include "vm/kmalloc.h"
+
 #define	PAGE_SIZE 4096
 
 // Kernel page directory in BSS
-static page_directory_t x86_system_pagedir;
+static __attribute__((__section__(".pagetable"))) page_directory_t x86_system_pagedir;
+
+/**
+ * Initialises the physical memory manager.
+ */
+void platform_pm_init(void) {
+	/*
+	 * Enable global addresses. This helps with minimising the TLB flush
+	 * overhead when performing a context switch, as kernel pages can stay in
+	 * the TLB.
+	 */
+	uint32_t cr4;
+	__asm__ volatile("mov %%cr4, %0" : "=r" (cr4));
+	cr4 |= (1 << 7);
+	__asm__ volatile("mov %0, %%cr4" : : "r"(cr4));
+
+	x86_system_pagedir.physAddr = (((uintptr_t) &x86_system_pagedir.tablesPhysical) - 0xC0000000);
+
+	//KDEBUG("table 0x%X 0x%X\n", (unsigned int) &x86_system_pagedir, (unsigned int) x86_system_pagedir.physAddr);
+}
 
 /**
  * Returns the kernel pagetable. This is stored in the BSS section, as it is
@@ -12,6 +33,7 @@ static page_directory_t x86_system_pagedir;
  * is in place.
  */
 platform_pagetable_t platform_pm_get_kernel_table(void) {
+	// set up the physical address
 	return (platform_pagetable_t) &x86_system_pagedir;
 }
 
@@ -25,17 +47,66 @@ platform_pagetable_t platform_pm_new(void) {
 }
 
 /**
- * Maps a given virtual address range to a given physical address range, with
- * the specified number of pages mapped in this range.
+ * Maps a given virtual address range to a given physical address range.
  */
-void platform_pm_map(platform_pagetable_t table, uintptr_t virt, uintptr_t phys, 
-					 size_t pages, platform_page_flags_t flags);
+void platform_pm_map(platform_pagetable_t t_in, uintptr_t virt, uintptr_t phys,
+					 platform_page_flags_t flags) {
+	// is there a page table for the 4MB region this falls under?
+	page_directory_t *d = (page_directory_t *) t_in;
+
+	unsigned int block = virt / 0x400000;
+	if(!d->tables[block]) {
+		// allocate a table
+		uintptr_t tmp;
+		page_table_t *table = kmalloc_ap(sizeof(page_table_t), &tmp);
+
+		d->tables[block] = table;
+		d->tablesPhysical[block] = tmp | 0x00000005; // USER | PRESENT
+
+		// ensure this table is clared
+		memset(table, 0x00, sizeof(page_table_t));
+	}
+
+	// configure the pagetable entry
+	page_table_t *table = d->tables[block];
+	int table_entry = (virt & 0x3FFFFF) / 0x1000;
+
+	// set up physical address
+	table->pages[table_entry].frame = phys >> 12;
+
+	// flags
+	table->pages[table_entry].global = flags & kPlatformPageGlobal;
+	table->pages[table_entry].cache = flags & kPlatformPageUncachable;
+	table->pages[table_entry].writethrough = flags & kPlatformPageWritethrough;
+	table->pages[table_entry].user = flags & kPlatformPageUser;
+	table->pages[table_entry].rw = !(flags & kPlatformPageReadOnly);
+
+	// reset some state (dirty, accessed)
+	table->pages[table_entry].dirty = 0;
+	table->pages[table_entry].accessed = 0;
+
+	// assume the page is present in memory
+	table->pages[table_entry].present = !(flags & kPlatformPageNotPresent);
+}
 
 /**
- * Unmaps num pages, starting at virt, from the pagetable. Whatever physical
+ * Unmaps the page, starting at virt, from the pagetable. Whatever physical
  * memory that backs them is not released.
  */
-void platform_pm_unmap(platform_pagetable_t table, uintptr_t virt, size_t pages);
+void platform_pm_unmap(platform_pagetable_t t_in, uintptr_t virt) {
+	// is there a page table for the 4MB region this falls under?
+	page_directory_t *d = (page_directory_t *) t_in;
+
+	unsigned int block = virt / 0x400000;
+	ASSERT(d->tables[block]);
+
+	// configure the pagetable entry: not present, address 0
+	page_table_t *table = d->tables[block];
+	int table_entry = (virt & 0x3FFFFF) / 0x1000;
+
+	table->pages[table_entry].frame = 0;
+	table->pages[table_entry].present = 0;
+}
 
 /**
  * Translates a virtual address in a given pagetable to a physical address.
@@ -59,3 +130,16 @@ void platform_pm_clear_dirty(platform_pagetable_t table, uintptr_t virt);
  * for either user or kernel privileges.
  */
 bool platform_pm_is_valid(platform_pagetable_t table, uintptr_t virt, bool user);
+
+/**
+ * Switches to a given pagetable. This does not verify its contents beforehand:
+ * it is the responsibility of the caller to do so.
+ */
+void platform_pm_switchto(platform_pagetable_t table) {
+	page_directory_t *d = (page_directory_t *) table;
+	uintptr_t addr = d->physAddr;
+
+	KINFO("0x%X 0x%X (cr3 = 0x%X)\n", (unsigned int) d->tables[0x300], (unsigned int) d->tablesPhysical[0x300], (unsigned int) d->physAddr);
+
+	__asm__ volatile("mov %0, %%cr3" : : "r" (addr));
+}

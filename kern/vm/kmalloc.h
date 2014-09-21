@@ -10,6 +10,13 @@
 void *kmalloc(size_t s);
 
 /**
+ * Allocates a chunk of page allocated memory, s bytes in size, and stores the
+ * physical address of the page in the specified memory, if not NULL. Returns
+ * NULL if memory could not be allocated.
+ */
+void *kmalloc_ap(size_t s, uintptr_t *physical);
+
+/**
  * Frees the specified chunk of memory. Pointer p must point to the beginning of
  * a previously-allocated region of memory.
  */

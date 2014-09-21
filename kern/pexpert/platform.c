@@ -14,3 +14,10 @@ void pexpert_init(void) {
 	// Initialise boot args
 	platform_bootarg_parse();
 }
+
+/**
+ * Causes a kernel panic.
+ */
+void pexpert_panic(const char *file, const int line, const char *message) {
+	KERROR("Kernel panic!\n%s:%i %s\n", file, line, message);
+}

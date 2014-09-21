@@ -42,7 +42,7 @@ void *kmalloc(size_t s) {
 
 		// get address and increment
 		uintptr_t address = state.s.dumb.start_placement;
-		
+
 		state.s.dumb.start_placement += s;
 		state.s.dumb.bytes_allocated += s;
 
@@ -50,6 +50,51 @@ void *kmalloc(size_t s) {
 	}
 
 	return NULL;
+}
+
+/**
+ * Allocates a chunk of page allocated memory, s bytes in size, and stores the
+ * physical address of the page in the specified memory, if not NULL. Returns
+ * NULL if memory could not be allocated.
+ */
+void *kmalloc_ap(size_t s, uintptr_t *physical) {
+	if(likely(state.use_smart_mapper)) {
+
+	} else {
+		// is the start placement address configured?
+		if(!state.s.dumb.start_placement) {
+			state.s.dumb.start_placement = (uintptr_t) &__kern_end;
+		}
+
+		// align size on 16-byte boundaries
+		if(s & 0x0F) {
+			s &= 0xFFFFFFF0;
+			s += 0x10;
+		}
+
+		// is placement already page aligned?
+		if(!(state.s.dumb.start_placement & 0xFFF)) {
+
+		} else {
+			// align to page bounds
+			state.s.dumb.start_placement += 0x1000 - (state.s.dumb.start_placement & 0xFFF);
+		}
+
+		// get address and increment
+		uintptr_t address = state.s.dumb.start_placement;
+
+		state.s.dumb.start_placement += s;
+		state.s.dumb.bytes_allocated += s;
+
+		// convert to physical
+		if(physical) {
+			*physical = address - 0xC0000000;
+		}
+
+		return (void *) address;
+	}
+
+	return NULL;	
 }
 
 /**

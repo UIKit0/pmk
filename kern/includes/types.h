@@ -40,8 +40,10 @@ extern "C" {
 // Attributes for functions
 #define __used	__attribute__((__used__))
 
+extern void pexpert_panic(const char *file, const int line, const char *message);
+
 //#define PANIC(msg) panic(msg, __FILE__, __LINE__);
-//#define ASSERT(b) ((b) ? (void)0 : panic_assert(__FILE__, __LINE__, #b))
+#define ASSERT(b) ((b) ? (void)0 : pexpert_panic(__FILE__, __LINE__, #b))
 
 // This can be used to swap words and longwords
 #define ENDIAN_DWORD_SWAP(x) ((x >> 24) & 0xFF) | ((x << 8) & 0xFF0000) | ((x >> 8) & 0xFF00) | ((x << 24) & 0xFF000000)

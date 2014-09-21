@@ -40,7 +40,7 @@ if [ "$1" == "qemu" ]; then
 	qemu-system-i386 -hda hdd.img -m 256M -vga std -soundhw sb16 -net nic,model=e1000 -net user -cpu pentium3 -rtc base=utc -monitor stdio -s
 elif [ "$1" == "bochs" ]; then
 	echo "\n[3;32;40m***** Running Bochs *****[0;37;49m"
-	bochs -f bochsrc.txt -q
+	bochs -f bochsrc.bxrc -q
 elif [ "$1" == "vbox" ]; then
 	echo "\n[3;32;40m***** Running VirtualBox *****[0;37;49m"
 	VBoxManage controlvm PMK poweroff

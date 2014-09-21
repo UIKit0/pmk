@@ -42,6 +42,8 @@ typedef struct page_directory {
 	page_table_t* tables[1024];
 	// Physiocal address of tables pointed to by above. See for disclaimer	
 	uintptr_t tablesPhysical[1024];
+
+	uintptr_t physAddr;
 } page_directory_t;
 
 #endif
