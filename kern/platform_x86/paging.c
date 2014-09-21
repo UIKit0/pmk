@@ -17,10 +17,10 @@ void platform_pm_init(void) {
 	 * overhead when performing a context switch, as kernel pages can stay in
 	 * the TLB.
 	 */
-	uint32_t cr4;
-	__asm__ volatile("mov %%cr4, %0" : "=r" (cr4));
-	cr4 |= (1 << 7);
-	__asm__ volatile("mov %0, %%cr4" : : "r"(cr4));
+//	uint32_t cr4;
+//	__asm__ volatile("mov %%cr4, %0" : "=r" (cr4));
+//	cr4 |= (1 << 7);
+//	__asm__ volatile("mov %0, %%cr4" : : "r"(cr4));
 
 	x86_system_pagedir.physAddr = (((uintptr_t) &x86_system_pagedir.tablesPhysical) - 0xC0000000);
 
@@ -137,9 +137,6 @@ bool platform_pm_is_valid(platform_pagetable_t table, uintptr_t virt, bool user)
  */
 void platform_pm_switchto(platform_pagetable_t table) {
 	page_directory_t *d = (page_directory_t *) table;
-	uintptr_t addr = d->physAddr;
-
-	KINFO("0x%X 0x%X (cr3 = 0x%X)\n", (unsigned int) d->tables[0x300], (unsigned int) d->tablesPhysical[0x300], (unsigned int) d->physAddr);
-
+	unsigned int addr = d->physAddr;
 	__asm__ volatile("mov %0, %%cr3" : : "r" (addr));
 }

@@ -41,19 +41,18 @@ void vm_init(void) {
 	// initialise the physical manager
 	vm_init_phys_allocator(vm_state.mem_total);
 
-	// Initialise physical manager
+	// Initialise platform physical mappings manager
 	platform_pm_init();
 
 	// get the blank kernel page directory
 	vm_state.kernel_table = platform_pm_get_kernel_table();
-
 
 	// reserve the kernel's memory
 	uintptr_t kernel_load_addr = bootargs->load_address_phys;
 	int kernel_size = ((((uintptr_t) &__kern_end) & 0x0FFFFFFF) - kernel_load_addr);
 
 	kernel_size += kheap_dumb_get_bytes();
-	//kernel_size += 1024 * 64;
+	kernel_size += 1024 * 64;
 
 	//KDEBUG("Kernel reserved 0x%X\n", kernel_size);
 
@@ -64,11 +63,16 @@ void vm_init(void) {
 		platform_pm_map(vm_state.kernel_table, i + 0xC0000000, i, VM_FLAGS_KERNEL);
 	}
 
+	// Map the low megabyte of memory
+	for (int i = 0; i < 0x100000; i += 0x1000) {
+		platform_pm_map(vm_state.kernel_table, i, i, VM_FLAGS_KERNEL);
+	}
+
 	// Allocate some memory for the kernel heap, pls.
 
 	// switch pagetable
 	platform_pm_switchto(vm_state.kernel_table);
-	KDEBUG("Set up paging\n");
+	KDEBUG("Switched to kernel page table\n");
 }
 
 /**

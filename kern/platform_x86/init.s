@@ -11,6 +11,7 @@
 .extern x86_platform_multiboot_struct_addr
 
 .globl	stack_top
+.globl	boot_page_directory
 
 #########################################################################################
 # Multiboot header
