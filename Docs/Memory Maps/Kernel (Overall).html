@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+	<head>
+		<style type="text/css">
+			* {
+				font-family: Helvetica, sans-serif;
+				font-size: 14px;
+			}
+
+			td:first-child {
+				vertical-align: top;
+				position: relative;
+				width: 70px;
+			}
+
+			div:first-child {
+				font-family: Monaco, monospace;
+				font-size: 0.8em;
+
+				position: absolute;
+				top: 0px;
+			}
+
+			div:nth-child(2) {
+				font-family: Monaco, monospace;
+				font-size: 0.8em;
+
+				position: absolute;
+				bottom: -3px;
+				color: #666;
+			}
+
+			td:nth-child(2) {
+				border: 1px solid #000;
+				width: 150px;
+				text-align: center;
+			}
+
+			tr > td:nth-child(3) {
+				font-family: Monaco, monospace;
+				font-size: 0.8em;
+			}
+
+			.unmapped { background: #eee; font-style: italic; }
+
+			.stack { background: #ecc; }
+			.data { background: #cec; }
+			.code { background: #cce; font-weight: bold; }
+			.bss { background: #eec; }
+
+			.stack > span, .data > span, .code > span, .bss > span {
+				font-family: Monaco, monospace;
+				font-size: 0.8em;
+			}
+
+			h1 {
+				font-size: 1.5em;
+			}
+
+			pre, code {
+				font-family: Monaco, monospace;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>PMR Kernel Memory Layout</h1>
+		<table>
+			<tr style="height: 225px">
+				<td><div>0x00000000</div><div>0xCFFFFFFF</div></td>
+				<td class="unmapped">Userspace</td>
+				<td>3328M</td>
+			</tr>
+			<tr style="height: 60px">
+				<td><div>0xD0000000</div><div>0xD2FFFFFF</div></td>
+				<td class="code"><span>.text</span>, <span>.rodata</span></td>
+				<td>48M</td>
+			</tr>
+			<tr style="height: 50px">
+				<td><div>0xD3000000</div><div>0xD3FFFFFF</div></td>
+				<td class="bss">IPC Map Area</td>
+				<td>16M</td>
+			</tr>
+			<tr style="height: 80px">
+				<td><div>0xD4000000</div><div>0xDFFFFFFF</div></td>
+				<td class="data">Thread Control Blocks</td>
+				<td>191M</td>
+			</tr>
+			<tr style="height: 100px">
+				<td><div>0xE0000000</div><div>0xEFFFFFFF</div></td>
+				<td class="data">Kernel Heap</td>
+				<td>256M</td>
+			</tr>
+			<tr style="height: 100px">
+				<td><div>0xF0000000</div><div>0xFFFFFFFF</div></td>
+				<td class="unmapped">Platform Reserved</td>
+				<td>256M</td>
+			</tr>
+		</table>
+	</body>
+</html>
