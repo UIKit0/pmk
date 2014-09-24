@@ -1,12 +1,12 @@
 MODULE=platform_x86
-SOURCES=init.s x86.c bootargs.c interrupt.c console.c paging.c
+SOURCES=init.s x86.c bootargs.c interrupt.c console.c paging.c irq_handler.s cpuid.c
 OBJECTS=$(sort $(filter-out %.c %.s %.cpp,$(SOURCES:.c=.o) $(SOURCES:.s=.o) $(SOURCES:.cpp=.o)))
 
 all: $(OBJECTS)
 
 .c.o:
 	@echo "[CC] $<"
-	@$(CC) $(CFLAGS) $< -o $@
+	@$(CC) $(filter-out -O2,$(CFLAGS)) -Wno-multichar $< -o $@
 
 .s.o:
 	@echo "[AS] $<"

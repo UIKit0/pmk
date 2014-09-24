@@ -13,6 +13,9 @@ void pexpert_init(void) {
 
 	// Initialise boot args
 	platform_bootarg_parse();
+
+	// Install interrupt handlers
+	platform_int_init();
 }
 
 /**
@@ -20,4 +23,11 @@ void pexpert_init(void) {
  */
 void pexpert_panic(const char *file, const int line, const char *message) {
 	KERROR("Kernel panic!\n%s:%i %s\n", file, line, message);
+}
+
+/**
+ * Platform IRQ handler: invoked by platform-specific stubs to handle an irq.
+ */
+void platform_irq_handler(uint32_t irq) {
+	
 }

@@ -96,4 +96,9 @@ bool platform_pm_is_valid(platform_pagetable_t table, uintptr_t virt, bool user)
  */
 void platform_pm_switchto(platform_pagetable_t table);
 
+/**
+ * Invalidates an address in the MMU's TLB, if applicable.
+ */
+void platform_pm_invalidate(void* m);
+
 #endif

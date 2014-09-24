@@ -24,6 +24,7 @@ extern const char *platform_name;
 #include "platform_console.h"
 
 /// Interrupts
+#include "platform_interrupt.h"
 
 /// Paging
 #include "platform_paging.h"

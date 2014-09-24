@@ -3,6 +3,9 @@
 
 #include <stdarg.h>
 
+// snprintf and friends
+#include "stdlib/printf.h"
+
 // string functions: strings
 size_t strlen(char* str);
 char* strtok(char *s, const char *delim);

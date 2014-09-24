@@ -140,3 +140,26 @@ void platform_pm_switchto(platform_pagetable_t table) {
 	unsigned int addr = d->physAddr;
 	__asm__ volatile("mov %0, %%cr3" : : "r" (addr));
 }
+
+/**
+ * Invalidates an address in the MMU's TLB, if applicable.
+ */
+void platform_pm_invalidate(void* m) {
+    // add memory to clobber list: force optimiser off
+    __asm__ volatile("invlpg %0" : : "m"(m) : "memory");
+}
+
+/**
+ * An internal native pagefault handler that redirects to that of the VM
+ * manager
+ */
+void x86_pagefault_handler(x86_registers_t reg) {
+	uintptr_t faulting_address;
+	__asm__ volatile("mov %%cr2, %0" : "=r" (faulting_address));
+
+	KDEBUG("Page fault !!1!!!!! (%u %u 0x%X)\n", (unsigned int) reg.int_no, (unsigned int) reg.err_code, (unsigned int) faulting_address);
+	KERROR("%08X %08X %08X %08X\n", (unsigned int) reg.eax, (unsigned int) reg.ebx, (unsigned int) reg.ecx, (unsigned int) reg.edx);
+	KERROR("%08X %08X %08X %08X\n", (unsigned int) reg.eip, (unsigned int) reg.cs, (unsigned int) reg.eflags, (unsigned int) reg.useresp);
+
+	while(1);
+}

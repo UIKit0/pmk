@@ -1,5 +1,5 @@
 MODULE=stdlib
-SOURCES=std.c locks.c
+SOURCES=std.c locks.c printf.c
 OBJECTS=$(sort $(filter-out %.c %.s %.cpp,$(SOURCES:.c=.o) $(SOURCES:.s=.o) $(SOURCES:.cpp=.o)))
 
 all: $(OBJECTS)
