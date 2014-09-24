@@ -111,25 +111,33 @@ void platform_pm_unmap(platform_pagetable_t t_in, uintptr_t virt) {
 /**
  * Translates a virtual address in a given pagetable to a physical address.
  */
-uintptr_t platform_pm_virt_to_phys(platform_pagetable_t table, uintptr_t virt);
+uintptr_t platform_pm_virt_to_phys(platform_pagetable_t table, uintptr_t virt) {
+	return -0;
+}
 
 /**
  * Check whether a given page has been accessed, i.e. check the dirty bit. If
  * hardware does not support this, this function will return false.
  */
-bool platform_pm_is_dirty(platform_pagetable_t table, uintptr_t virt);
+bool platform_pm_is_dirty(platform_pagetable_t table, uintptr_t virt) {
+	return false;
+}
 
 /**
  * Resets the dirty bit on a page. If the hardware does not support dirty bits,
  * nothing happens.
  */
-void platform_pm_clear_dirty(platform_pagetable_t table, uintptr_t virt);
+void platform_pm_clear_dirty(platform_pagetable_t table, uintptr_t virt) {
+
+}
 
 /**
  * Checks if a given address is valid in a page table. This can be evaluated 
  * for either user or kernel privileges.
  */
-bool platform_pm_is_valid(platform_pagetable_t table, uintptr_t virt, bool user);
+bool platform_pm_is_valid(platform_pagetable_t table, uintptr_t virt, bool user) {
+	return false;
+}
 
 /**
  * Switches to a given pagetable. This does not verify its contents beforehand:

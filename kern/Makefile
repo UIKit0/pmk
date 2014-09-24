@@ -8,7 +8,7 @@ LIBCXX_HEADERS=$(dir $(shell which $(CC)))../../libcxx/include/
 CURRENT_DIR=$(shell pwd)
 
 ARCH_ARGS=-march=i686 -mtune=pentium3 -msoft-float -mno-sse
-WARNINGS=-Werror -Wall -Wno-div-by-zero
+WARNINGS=-Werror -Wall -Wno-div-by-zero -Wno-multichar
 INCLUDES=-I$(CURRENT_DIR) -I. -I$(CURRENT_DIR)/includes/
 
 # enable stack protector, and always include the frame pointer for backtracing

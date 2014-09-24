@@ -14,11 +14,16 @@ void vm_init_phys_allocator(uintptr_t bytes);
  * used when the VM manager is first initialised, so pages belonging to kernel
  * data cannot be accidentally re-allocated.
  */
-void vm_reserve_phys(intptr_t address);
+void vm_reserve_phys(uintptr_t address);
 
 /**
  * Allocates a single page of physical memory. Each page is 4K in size.
  */
-intptr_t vm_allocate_phys(void);
+uintptr_t vm_allocate_phys(void);
+
+/**
+ * Releases physical memory back to the system so it can be reallocated.
+ */
+void vm_deallocate_phys(uintptr_t address);
 
 #endif

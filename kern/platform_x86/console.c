@@ -81,6 +81,21 @@ void platform_console_clear(void) {
 }
 
 /**
+ * Scrolls the display up one row.
+ */
+static void vga_scroll_up(void) {	
+	uint8_t *video_memory = (uint8_t *) 0xB8000;
+
+	// Move everything upwards
+	memmove(video_memory, video_memory + (CONSOLE_WIDTH * 2), (CONSOLE_HEIGHT - 1) * CONSOLE_WIDTH*2);
+
+	// Clear bottom row
+	memclr(video_memory + ((CONSOLE_HEIGHT - 1) * (2 * CONSOLE_WIDTH)), CONSOLE_WIDTH * 2);
+
+	current_y--;
+}
+
+/**
  * Prints a character to the current console. This can print to the display,
  * a debugger, a serial interface, and more. Special characters like "\n" must
  * be handled specifically.
@@ -93,12 +108,7 @@ void platform_console_putc(char c) {
 
 		// check if the console needs to be scrolled up
 		if(current_y == CONSOLE_HEIGHT) {
-			uint16_t *src = (uint16_t *) (0xB8000 + (CONSOLE_WIDTH * 2));
-			uint16_t *dst = (uint16_t *) 0xB8000;
-			memcpy(dst, src, CONSOLE_WIDTH * (CONSOLE_HEIGHT - 1) * 2);
-
-			dst = (uint16_t *) (0xB8000 + CONSOLE_WIDTH * (CONSOLE_HEIGHT - 2));
-			memset(dst, 0x00, CONSOLE_WIDTH * 2);
+			vga_scroll_up();
 		}
 	} else { // regular character
 		uint16_t *mem = (uint16_t *) (0xB8000 + (current_y * CONSOLE_WIDTH * 2) + (current_x * 2));
@@ -113,12 +123,7 @@ void platform_console_putc(char c) {
 
 			// check if the console needs to be scrolled up
 			if(current_y == CONSOLE_HEIGHT) {
-				uint16_t *src = (uint16_t *) (0xB8000 + (CONSOLE_WIDTH * 2));
-				uint16_t *dst = (uint16_t *) 0xB8000;
-				memcpy(dst, src, CONSOLE_WIDTH * (CONSOLE_HEIGHT - 1) * 2);
-
-				dst = (uint16_t *) (0xB8000 + CONSOLE_WIDTH * (CONSOLE_HEIGHT - 2));
-				memset(dst, 0x00, CONSOLE_WIDTH * 2);
+				vga_scroll_up();
 			}
 		}
 	}

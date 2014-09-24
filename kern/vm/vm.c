@@ -1,16 +1,13 @@
 #include "vm.h"
 #include "physical.h"
 
-#include "pexpert/platform.h"
+#include "kheap.h"
 
 // take address to get kernel's end address
 extern char __kern_end;
 
 // gets the number of bytes on the dumb kernel heap
 unsigned int kheap_dumb_get_bytes(void);
-
-// kernel pages are mapped as RW
-#define	VM_FLAGS_KERNEL kPlatformPageGlobal
 
 /**
  * Overall state of the Virtual Memory manager
@@ -63,19 +60,42 @@ void vm_init(void) {
 		platform_pm_map(vm_state.kernel_table, i + 0xC0000000, i, VM_FLAGS_KERNEL);
 	}
 
-	// Map the low megabyte of memory
+	// Map the low megabyte of memory verbatim
 	for (int i = 0; i < 0x100000; i += 0x1000) {
 		platform_pm_map(vm_state.kernel_table, i, i, VM_FLAGS_KERNEL);
 	}
 
-	// Allocate some memory for the kernel heap, pls.
+	// Allocate some memory for the kernel heap and enable it
+	for(int i = 0xE0000000; i < 0xE0010000; i += 0x1000) {
+		uintptr_t phys_addr = vm_allocate_phys();
+		platform_pm_map(vm_state.kernel_table, i, phys_addr, VM_FLAGS_KERNEL);
+	}
+
+	kheap_install();
 
 	// switch pagetable
 	platform_pm_switchto(vm_state.kernel_table);
-	KDEBUG("Switched to kernel page table\n");
+	KWARNING("Switched to kernel page table\n");
+
+	uintptr_t a = (uintptr_t) kmalloc(0x1000);
+	uintptr_t b = (uintptr_t) kmalloc(0x10000);
+	KINFO("%X %X\n", (unsigned int) a, (unsigned int) b);
+
+	kfree((void *) b);
+
+	uintptr_t c = (uintptr_t) kmalloc(0x2320);
+	uintptr_t d = (uintptr_t) kmalloc(0x20);
+	KINFO("%X %X\n", (unsigned int) c, (unsigned int) d);
 }
 
 /**
  * Initialise the kernel's page tables. This basically means mapping the
  * kernel's data sections into the first 16M of the kernel map.
  */
+
+/**
+ * Returns the kernel's pagetable.
+ */
+platform_pagetable_t vm_get_pagetable(void) {
+	return vm_state.kernel_table;
+}
