@@ -9,6 +9,18 @@ struct platform_bootargs {
 	uintptr_t load_address_phys;
 
 	char boot_params[512];
+
+	struct {
+		unsigned int width, height;
+		unsigned int stride;
+
+		enum {
+			kFramebufferRGBA8888,
+			kFramebufferRGB565,
+		} pixel_format;
+
+		uintptr_t base;
+	} framebuffer;
 };
 typedef struct platform_bootargs platform_bootargs_t;
 

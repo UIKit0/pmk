@@ -56,7 +56,7 @@ x86_cpu_t x86_detect_cpu(void) {
 
 			// perform checks if we really do know the CPU
 			switch(ecx) {
-				case ENDIAN_DWORD_SWAP('auls'):
+				case ENDIAN_DWORD_SWAP('VIA '):
 					cpu.manufacturer =  kManufacturerVia;
 					break;
 					
@@ -70,9 +70,9 @@ x86_cpu_t x86_detect_cpu(void) {
 					break;
 				
 				// impossible to differentiate from VIA?	
-				//case ENDIAN_DWORD_SWAP('auls'):
-				//	cpu.manufacturer =  kManufacturerCentaur;
-				//	break;
+				case ENDIAN_DWORD_SWAP('auls'):
+					cpu.manufacturer =  kManufacturerCentaur;
+					break;
 					
 				case ENDIAN_DWORD_SWAP('iven'):
 					cpu.manufacturer =  kManufacturerNexgen;

@@ -6,8 +6,8 @@
 # Several symbols are exported from this file that are used by other platform code.
 #########################################################################################
 
-.globl	gdt_table
-.globl	gdt_kernel_tss
+.globl	x86_gdt_table
+.globl	x86_gdt_kernel_tss
 .extern x86_platform_multiboot_struct_addr
 
 .globl	stack_top
@@ -71,7 +71,7 @@ loader:
 	mov		$stack_top, %esp
 
 	# Set up GDT
-	lgdt	gdt_table
+	lgdt	x86_gdt_table
 
 	# Reload GDT entries
 	jmp		$0x08, $.gdtFlush
@@ -87,7 +87,10 @@ loader:
 	mov		%ebx, x86_platform_multiboot_struct_addr
 
 	# Enable SSE
-	call	sse_init
+	call	x86_sse_init
+	
+	# initialise MSRs
+	call	x86_msr_init
 
 	# Jump into the kernel main function
 	call	kmain
@@ -103,7 +106,7 @@ loader:
 # Enables the SSE features of the processor. This fails on CPUs earlier than a
 # Pentium 3.
 #
-sse_init:
+x86_sse_init:
 	push	%eax
 	mov		%cr0, %eax
 
@@ -123,6 +126,19 @@ sse_init:
 	ret
 
 #
+# Initialises x86-specific MSRs to their default values, so the CPU is in an
+# expected state.
+#
+x86_msr_init:
+# disable the NT4 bit which mucks with CPUID (MISC_ENABLE MSR, 0x01A0, bit 22)
+	mov		$0x1A0, %ecx
+	rdmsr
+	and		$~(1<<22), %eax
+	wrmsr
+
+	ret
+
+#
 # A GDT to use. This configures kernel and user segments, in the format that
 # the SYSENTER/SYSEXIT instructions require it. It also has a GDT table which
 # can be used by LDGDT.
@@ -131,19 +147,19 @@ sse_init:
 .section .data
 	.align	0x10
 
-gdt_start:
+x86_gdt_start:
 	.quad	0x0000000000000000									# Null Descriptor
 	.quad	0x00CF9A000000FFFF									# Kernel code
 	.quad	0x00CF92000000FFFF									# Kernel data
 	.quad	0x00CFFA000000FFFF									# User code
 	.quad	0x00CFF2000000FFFF									# User data
 
-gdt_kernel_tss:
+x86_gdt_kernel_tss:
 	.quad	0x0000000000000000									# Kernel TSS
 
-gdt_table:
-	.word	gdt_table-gdt_start-1								# Length
-	.long	gdt_start											# Linear address to GDT	
+x86_gdt_table:
+	.word	x86_gdt_table-x86_gdt_start-1						# Length
+	.long	x86_gdt_start										# Linear address to GDT	
 
 
 #

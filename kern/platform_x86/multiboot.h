@@ -166,6 +166,56 @@ typedef struct multiboot_info {
 	uint16_t vbe_interface_seg;
 	uint16_t vbe_interface_off;
 	uint16_t vbe_interface_len;
-} multiboot_info_t;
+} __attribute__((packed)) multiboot_info_t;
+
+typedef struct multiboot_vbe {
+	uint16_t ModeAttributes;
+	uint8_t WinAAttributes;
+	uint8_t WinBAttributes;
+	uint16_t WinGranularity;
+	uint16_t WinSize;
+	uint16_t WinASegment;
+	uint16_t WinBSegment;
+	void *WinFuncPtr;
+	uint16_t BytesPerScanLine;
+	uint16_t XRes;
+	uint16_t YRes;
+	uint8_t Xuint8_tSize;
+	uint8_t Yuint8_tSize;
+	uint8_t NumberOfPlanes;
+	uint8_t BitsPerPixel;
+	uint8_t NumberOfBanks;
+	uint8_t MemoryModel;
+	uint8_t BankSize;
+	uint8_t NumberOfImagePages;
+	uint8_t res1;
+	uint8_t RedMaskSize;
+	uint8_t RedFieldPosition;
+	uint8_t GreenMaskSize;
+	uint8_t GreenFieldPosition;
+	uint8_t BlueMaskSize;
+	uint8_t BlueFieldPosition;
+	uint8_t RsvedMaskSize;
+	uint8_t RsvedFieldPosition;
+
+	//VBE 2.0
+	uint32_t *PhysBasePtr;
+	uint32_t OffScreenMemOffset;
+	uint16_t OffScreenMemSize;
+
+	//VBE 2.1
+	uint16_t LinbytesPerScanLine;
+	uint8_t BankNumberOfImagePages;
+	uint8_t LinNumberOfImagePages;
+	uint8_t LinRedMaskSize;
+	uint8_t LinRedFieldPosition;
+	uint8_t LingreenMaskSize;
+	uint8_t LinGreenFieldPosition;
+	uint8_t LinBlueMaskSize;
+	uint8_t LinBlueFieldPosition;
+	uint8_t LinRsvdMaskSize;
+	uint8_t LinRsvdFieldPosition;
+	uint8_t res2[194];
+} __attribute__((packed)) multiboot_vbe_t;
 
 #endif

@@ -165,7 +165,11 @@ void x86_pagefault_handler(x86_registers_t reg) {
 	uintptr_t faulting_address;
 	__asm__ volatile("mov %%cr2, %0" : "=r" (faulting_address));
 
-	KDEBUG("Page fault !!1!!!!! (%u %u 0x%X)\n", (unsigned int) reg.int_no, (unsigned int) reg.err_code, (unsigned int) faulting_address);
+//	bool isUser = reg.err_code & 0x4;
+//	bool isWrite = reg.err_code & 0x2;
+//	bool isPresent = reg.err_code & 0x1;
+
+	KDEBUG("Page fault! (%u %u 0x%X)\n", (unsigned int) reg.int_no, (unsigned int) reg.err_code, (unsigned int) faulting_address);
 	KERROR("%08X %08X %08X %08X\n", (unsigned int) reg.eax, (unsigned int) reg.ebx, (unsigned int) reg.ecx, (unsigned int) reg.edx);
 	KERROR("%08X %08X %08X %08X\n", (unsigned int) reg.eip, (unsigned int) reg.cs, (unsigned int) reg.eflags, (unsigned int) reg.useresp);
 

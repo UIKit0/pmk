@@ -75,8 +75,9 @@ void vm_init(void) {
 
 	// switch pagetable
 	platform_pm_switchto(vm_state.kernel_table);
-	KWARNING("Switched to kernel page table\n");
+	KDEBUG("Switched to kernel page table\n");
 
+	// test allocator
 	uintptr_t a = (uintptr_t) kmalloc(0x1000);
 	uintptr_t b = (uintptr_t) kmalloc(0x10000);
 	KINFO("%X %X\n", (unsigned int) a, (unsigned int) b);
