@@ -1,0 +1,11 @@
+# Set platform-specific flags: Tune for Pentium 3
+ARCH_ARGS=-march=i686 -mtune=pentium3
+
+# Kernel does not use floating point or SSE
+ARCH_ARGS+=-msoft-float -mno-sse
+
+# align functions on dword boundaries
+OPTIONS+=-falign-functions=16
+
+# Include define for x86 platform include
+PLATFORM_DEFINES=-DCURRENT_PLATFORM_HEADER=\"$(PLATFORM)/platform_defines.h\"

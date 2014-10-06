@@ -22,7 +22,7 @@ hdiutil attach ./hdd.img
 
 # Copy files
 rm -f /Volumes/PMK/boot/kernel.elf
-cp kern/kernel.elf /Volumes/PMK/boot/kernel.elf
+cp kern/kernel_stripped.elf /Volumes/PMK/boot/kernel.elf
 
 # Clean up OS X's crap
 rm -rf /Volumes/PMK/.fseventsd

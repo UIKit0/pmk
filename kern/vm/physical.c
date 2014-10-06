@@ -24,7 +24,7 @@ static unsigned int nframes;
  *
  * @param frame_addr Physical memory address
  */
-static void set_frame(uintptr_t frame_addr) {
+static inline void set_frame(uintptr_t frame_addr) {
 	unsigned int frame = frame_addr / PAGE_SIZE;
 	unsigned int idx = INDEX_FROM_BIT(frame);
 	unsigned int off = OFFSET_FROM_BIT(frame);
@@ -108,7 +108,7 @@ uintptr_t vm_allocate_phys(void) {
  * Releases physical memory back to the system so it can be reallocated.
  */
 void vm_deallocate_phys(uintptr_t address) {
-	
+
 }
 
 /**

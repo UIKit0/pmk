@@ -39,6 +39,7 @@ extern "C" {
 
 // Attributes for functions
 #define __used	__attribute__((__used__))
+#define	__packed __attribute__((__packed__))
 
 extern void pexpert_panic(const char *file, const int line, const char *message);
 

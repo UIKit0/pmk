@@ -17,10 +17,10 @@ void platform_pm_init(void) {
 	 * overhead when performing a context switch, as kernel pages can stay in
 	 * the TLB.
 	 */
-//	uint32_t cr4;
-//	__asm__ volatile("mov %%cr4, %0" : "=r" (cr4));
-//	cr4 |= (1 << 7);
-//	__asm__ volatile("mov %0, %%cr4" : : "r"(cr4));
+	uint32_t cr4;
+	__asm__ volatile("mov %%cr4, %0" : "=r" (cr4));
+	cr4 |= (1 << 7);
+	__asm__ volatile("mov %0, %%cr4" : : "r"(cr4));
 
 	x86_system_pagedir.physAddr = (((uintptr_t) &x86_system_pagedir.tablesPhysical) - 0xC0000000);
 
@@ -111,32 +111,103 @@ void platform_pm_unmap(platform_pagetable_t t_in, uintptr_t virt) {
 /**
  * Translates a virtual address in a given pagetable to a physical address.
  */
-uintptr_t platform_pm_virt_to_phys(platform_pagetable_t table, uintptr_t virt) {
-	return -0;
+uintptr_t platform_pm_virt_to_phys(platform_pagetable_t t_in, uintptr_t virt) {
+	// find the page table that maps this 4M range
+	page_directory_t *dir = (page_directory_t *) t_in;
+	unsigned int dir_offset = virt / 0x400000;
+
+	// is the table mapped, first of all?
+	if(!dir->tablesPhysical[dir_offset]) {
+		return 0;
+	}
+
+	// get the pagetable and check if this region is mapped
+	page_table_t *table = dir->tables[dir_offset];
+	unsigned int table_offset = (virt & 0x3FFFFF) / PAGE_SIZE;
+
+	if(!table->pages[table_offset].present) {
+		return 0;
+	}
+
+	// get the table's physical frame
+	uintptr_t physical = table->pages[table_offset].frame << 12;
+	physical += virt & ~(PAGE_SIZE - 1);
+
+	return physical;
 }
 
 /**
  * Check whether a given page has been accessed, i.e. check the dirty bit. If
  * hardware does not support this, this function will return false.
  */
-bool platform_pm_is_dirty(platform_pagetable_t table, uintptr_t virt) {
-	return false;
+bool platform_pm_is_dirty(platform_pagetable_t t_in, uintptr_t virt) {
+	// find the page table that maps this 4M range
+	page_directory_t *dir = (page_directory_t *) t_in;
+	unsigned int dir_offset = virt / 0x400000;
+
+	// is the table mapped, first of all?
+	if(!dir->tablesPhysical[dir_offset]) {
+		return false;
+	}
+
+	// get the pagetable and check if this region is mapped
+	page_table_t *table = dir->tables[dir_offset];
+	unsigned int table_offset = (virt & 0x3FFFFF) / PAGE_SIZE;
+
+	if(!table->pages[table_offset].present) {
+		return false;
+	}
+
+	// get the dirty bit's status
+	return table->pages[table_offset].dirty;
 }
 
 /**
  * Resets the dirty bit on a page. If the hardware does not support dirty bits,
  * nothing happens.
  */
-void platform_pm_clear_dirty(platform_pagetable_t table, uintptr_t virt) {
+void platform_pm_clear_dirty(platform_pagetable_t t_in, uintptr_t virt) {
+	// find the page table that maps this 4M range
+	page_directory_t *dir = (page_directory_t *) t_in;
+	unsigned int dir_offset = virt / 0x400000;
 
+	// is the table mapped, first of all?
+	if(!dir->tablesPhysical[dir_offset]) {
+		return;
+	}
+
+	// get the pagetable and check if this region is mapped
+	page_table_t *table = dir->tables[dir_offset];
+	unsigned int table_offset = (virt & 0x3FFFFF) / PAGE_SIZE;
+
+	if(!table->pages[table_offset].present) {
+		return;
+	}
+
+	// clear dirty bit
+	table->pages[table_offset].dirty = false;
 }
 
 /**
  * Checks if a given address is valid in a page table. This can be evaluated 
  * for either user or kernel privileges.
  */
-bool platform_pm_is_valid(platform_pagetable_t table, uintptr_t virt, bool user) {
-	return false;
+bool platform_pm_is_valid(platform_pagetable_t t_in, uintptr_t virt, bool user) {
+	// find the page table that maps this 4M range
+	page_directory_t *dir = (page_directory_t *) t_in;
+	unsigned int dir_offset = virt / 0x400000;
+
+	// is the table mapped, first of all?
+	if(!dir->tablesPhysical[dir_offset]) {
+		return false;
+	}
+
+	// get the pagetable and check if this region is mapped
+	page_table_t *table = dir->tables[dir_offset];
+	unsigned int table_offset = (virt & 0x3FFFFF) / PAGE_SIZE;
+
+	// is the address valid?
+	return user ? (table->pages[table_offset].present & table->pages[table_offset].user) : table->pages[table_offset].present;
 }
 
 /**

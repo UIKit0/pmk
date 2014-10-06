@@ -169,53 +169,50 @@ typedef struct multiboot_info {
 } __attribute__((packed)) multiboot_info_t;
 
 typedef struct multiboot_vbe {
-	uint16_t ModeAttributes;
-	uint8_t WinAAttributes;
-	uint8_t WinBAttributes;
-	uint16_t WinGranularity;
-	uint16_t WinSize;
-	uint16_t WinASegment;
-	uint16_t WinBSegment;
-	void *WinFuncPtr;
-	uint16_t BytesPerScanLine;
-	uint16_t XRes;
-	uint16_t YRes;
-	uint8_t Xuint8_tSize;
-	uint8_t Yuint8_tSize;
-	uint8_t NumberOfPlanes;
-	uint8_t BitsPerPixel;
-	uint8_t NumberOfBanks;
-	uint8_t MemoryModel;
-	uint8_t BankSize;
-	uint8_t NumberOfImagePages;
-	uint8_t res1;
-	uint8_t RedMaskSize;
-	uint8_t RedFieldPosition;
-	uint8_t GreenMaskSize;
-	uint8_t GreenFieldPosition;
-	uint8_t BlueMaskSize;
-	uint8_t BlueFieldPosition;
-	uint8_t RsvedMaskSize;
-	uint8_t RsvedFieldPosition;
+	uint16_t attributes;
+	uint8_t windowA, windowB;
+	uint16_t granularity;
+	uint16_t windowSize;
+	uint16_t segmentA, segmentB;
+	uint32_t winFuncPtr; // ptr to INT 0x10 Function 0x4F05
+	uint16_t pitch; // bytes per scan line
 
-	//VBE 2.0
-	uint32_t *PhysBasePtr;
-	uint32_t OffScreenMemOffset;
-	uint16_t OffScreenMemSize;
+	uint16_t screen_width, screen_height; // resolution
+	uint8_t wChar, yChar, planes, bpp, banks; // number of banks
+	uint8_t memoryModel, bankSize, imagePages;
+	uint8_t reserved0;
 
-	//VBE 2.1
-	uint16_t LinbytesPerScanLine;
-	uint8_t BankNumberOfImagePages;
-	uint8_t LinNumberOfImagePages;
-	uint8_t LinRedMaskSize;
-	uint8_t LinRedFieldPosition;
-	uint8_t LingreenMaskSize;
-	uint8_t LinGreenFieldPosition;
-	uint8_t LinBlueMaskSize;
-	uint8_t LinBlueFieldPosition;
-	uint8_t LinRsvdMaskSize;
-	uint8_t LinRsvdFieldPosition;
-	uint8_t res2[194];
+	// color masks
+	uint8_t readMask, redPosition;
+	uint8_t greenMask, greenPosition; 
+	uint8_t blueMask, bluePosition;
+	uint8_t reservedMask, reservedPosition;
+	uint8_t directColorAttributes;
+
+	uint32_t physbase; //pointer to LFB in LFB modes 
+	uint32_t offScreenMemOff;
+	uint16_t offScreenMemSize;
+	uint8_t reserved1[206];
 } __attribute__((packed)) multiboot_vbe_t;
+
+typedef struct {
+	uint32_t signature;
+
+	uint16_t vesa_version;
+	
+	uint32_t oem_name;
+
+	uint32_t capabilities;
+	uint32_t video_mode_table_ptr;
+	uint16_t video_mem;
+
+	uint16_t oem_version;
+	char *vendor_name_ptr;
+	char *product_name_ptr;
+	char *product_rev_ptr;
+
+	uint16_t vbe_af_version;
+	uint32_t vbe_af_modes;
+} __attribute__((packed)) multiboot_vbe_control_t;
 
 #endif

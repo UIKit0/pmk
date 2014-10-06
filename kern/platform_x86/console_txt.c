@@ -69,7 +69,7 @@ static void vga_move_cursor();
 /**
  * Clears the console.
  */
-void platform_console_clear(void) {
+void platform_console_txt_clear(void) {
 	current_x = current_y = 0;
 
 	// clear the VGA memory (0xB8000)
@@ -100,7 +100,7 @@ static void vga_scroll_up(void) {
  * a debugger, a serial interface, and more. Special characters like "\n" must
  * be handled specifically.
  */
-void platform_console_putc(char c) {
+void platform_console_txt_putc(char c) {
 	// Check if special character
 	if(c == '\n') {
 		current_y++;
@@ -136,13 +136,13 @@ void platform_console_putc(char c) {
  * Prints a formatted string to the current console. This works like printf on
  * most systems.
  */
-extern int platform_console_printf(const char* format, va_list ap) {
+extern int platform_console_txt_printf(const char* format, va_list ap) {
 	char *str = (char *) console_printf_buffer;
 	int n = vsprintf(str, format, ap);
 
 	// rpint the char
 	while(*str) {
-		platform_console_putc(*str++);
+		platform_console_txt_putc(*str++);
 	}
 
 	return n;
@@ -152,7 +152,7 @@ extern int platform_console_printf(const char* format, va_list ap) {
  * Changes the type of message to be printed to the console. Consoles needn't
  * do anything with this, but a possible use may be printing coloured text.
  */
-void platform_console_set_type(platform_console_type_t type) {
+void platform_console_txt_set_type(platform_console_type_t type) {
 	switch(type) {
 		// white on red
 		case kPlatformConsoleCritical:

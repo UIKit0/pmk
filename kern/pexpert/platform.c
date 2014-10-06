@@ -7,12 +7,22 @@ void pexpert_init(void) {
 	// Initialise the low-level components of the platform.
 	platform_init();
 
-	// With the platform initialised, initialise the console.
-	platform_console_clear();
-	KINFO("Initialising platform \"%s\"\n", platform_name);
-
-	// Initialise boot args
+	/*
+	 * Initialise and parse the boot arguments. We do this before the console
+	 * to determine what console mode should be used, as the system may be in
+	 * graphical mode.
+	 */
 	platform_bootarg_parse();
+
+	// determine which console to initialise
+	const platform_bootargs_t *args = platform_bootarg_get();
+
+	// With the platform initialised, initialise the console.
+	if(!args->framebuffer.isVideo) {
+		platform_console_txt_clear();
+	}
+
+	KINFO("Initialising platform \"%s\"\n", platform_name);
 
 	// Install interrupt handlers
 	platform_int_init();

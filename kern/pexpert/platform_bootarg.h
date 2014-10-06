@@ -11,6 +11,8 @@ struct platform_bootargs {
 	char boot_params[512];
 
 	struct {
+		bool isVideo;
+
 		unsigned int width, height;
 		unsigned int stride;
 
@@ -20,6 +22,8 @@ struct platform_bootargs {
 		} pixel_format;
 
 		uintptr_t base;
+
+		unsigned int video_mem; // Kbytes
 	} framebuffer;
 };
 typedef struct platform_bootargs platform_bootargs_t;

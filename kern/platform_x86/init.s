@@ -19,7 +19,7 @@
 .set ALIGN,    1 << 0						# align loaded modules on page boundaries
 .set MEMINFO,  1 << 1						# provide memory map
 .set VIDINFO,  1 << 2						# OS wants video mode set
-.set FLAGS,    ALIGN | MEMINFO# | VIDINFO	# this is the multiboot 'flag' field
+.set FLAGS,    ALIGN | MEMINFO | VIDINFO	# this is the multiboot 'flag' field
 .set MAGIC,    0x1BADB002					# 'magic number' lets bootloader find the header
 .set CHECKSUM, -(MAGIC + FLAGS)				# checksum required
 
@@ -33,7 +33,7 @@
 .long CHECKSUM
 .long 0, 0, 0, 0, 0							# This is load address stuff we don't care for
 .long 0										# Set graphics mode
-.long 640, 480, 8							# Width, height, depth
+.long 1024, 768, 32							# Width, height, depth
 
 .section .entry
 
@@ -89,7 +89,7 @@ loader:
 	# Enable SSE
 	call	x86_sse_init
 	
-	# initialise MSRs
+	# initialise MSRs cause x86 sucks
 	call	x86_msr_init
 
 	# Jump into the kernel main function
@@ -143,7 +143,6 @@ x86_msr_init:
 # the SYSENTER/SYSEXIT instructions require it. It also has a GDT table which
 # can be used by LDGDT.
 #
-
 .section .data
 	.align	0x10
 

@@ -29,6 +29,9 @@ extern const char *platform_name;
 /// Paging
 #include "platform_paging.h"
 
+/// Platform defines
+#include CURRENT_PLATFORM_HEADER
+
 /**
  * Performs initialisation of the platform.
  */

@@ -55,6 +55,15 @@ typedef struct {
 			char name[17];
 		} generic;
 	} manufacturer_info;
+
+	struct {
+		bool apic;
+		bool pae;
+
+		bool mmx;
+		bool sse1;
+		bool sse2;
+	} extensions;
 } x86_cpu_t;
 
 /**

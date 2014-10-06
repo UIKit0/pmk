@@ -57,27 +57,36 @@ void vm_init(void) {
 
 	// map the kernel memory
 	for (int i = 0; i < kernel_size + 0x100000; i += 0x1000) {
-		platform_pm_map(vm_state.kernel_table, i + 0xC0000000, i, VM_FLAGS_KERNEL);
+		platform_pm_map(vm_state.kernel_table, i + VM_KERNEL_BASE, i, VM_FLAGS_KERNEL);
 	}
 
-	// Map the low megabyte of memory verbatim
-	for (int i = 0; i < 0x100000; i += 0x1000) {
+	// Perform identity mapping for the real-mode accessible RAM (to 0x10FFEF)
+	for (int i = 0; i < 0x110000; i += 0x1000) {
 		platform_pm_map(vm_state.kernel_table, i, i, VM_FLAGS_KERNEL);
 	}
 
 	// Allocate some memory for the kernel heap and enable it
-	for(int i = 0xE0000000; i < 0xE0010000; i += 0x1000) {
+	for(int i = VM_KERNEL_HEAP_BASE; i < (VM_KERNEL_HEAP_BASE + 0x10000); i += 0x1000) {
 		uintptr_t phys_addr = vm_allocate_phys();
 		platform_pm_map(vm_state.kernel_table, i, phys_addr, VM_FLAGS_KERNEL);
+	}
+
+	// Map the video framebuffer
+	if(bootargs->framebuffer.isVideo) {
+		platform_console_vid_map();
 	}
 
 	kheap_install();
 
 	// switch pagetable
 	platform_pm_switchto(vm_state.kernel_table);
-	KDEBUG("Switched to kernel page table\n");
 
-	// test allocator
+	// set up the video console
+	if(bootargs->framebuffer.isVideo) {
+		platform_console_vid_clear();
+	}
+
+/*	// test allocator
 	uintptr_t a = (uintptr_t) kmalloc(0x1000);
 	uintptr_t b = (uintptr_t) kmalloc(0x10000);
 	KINFO("%X %X\n", (unsigned int) a, (unsigned int) b);
@@ -86,7 +95,7 @@ void vm_init(void) {
 
 	uintptr_t c = (uintptr_t) kmalloc(0x2320);
 	uintptr_t d = (uintptr_t) kmalloc(0x20);
-	KINFO("%X %X\n", (unsigned int) c, (unsigned int) d);
+	KINFO("%X %X\n", (unsigned int) c, (unsigned int) d);*/
 }
 
 /**

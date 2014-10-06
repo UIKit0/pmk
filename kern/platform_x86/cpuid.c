@@ -10,6 +10,11 @@ static x86_cpu_t cpuid_detect_intel(void);
  */
 static x86_cpu_t cpuid_detect_amd(void);
 /**
+ * Detects the CPU extensions that this processor supports, and fills in a CPU
+ * struct.
+ */
+static void cpuid_detect_extensions(x86_cpu_t *cpu);
+/**
  * Takes registers containing a string, in the CPUID string output format, and
  * converts it to an ASCII string in the input buffer.
  */
@@ -265,6 +270,9 @@ static x86_cpu_t cpuid_detect_intel(void) {
 		// It is possible the CPU doesn't have a valid string, so leave it empty
 	}
 
+	// detect extensions
+	cpuid_detect_extensions(&cpu);
+
 	return cpu;
 }
 
@@ -277,7 +285,7 @@ static x86_cpu_t cpuid_detect_amd(void) {
 
 	cpu.manufacturer = kManufacturerAMD;
 
-	unsigned long extended, eax, ebx, ecx, edx, unused;
+	uint32_t extended, eax, ebx, ecx, edx, unused;
 
 	// call CPUID to get the family, model, etc	
 	cpuid(1, eax, unused, unused, unused);
@@ -316,5 +324,28 @@ static x86_cpu_t cpuid_detect_amd(void) {
 		}
 	}
 
+	// detect extensions
+	cpuid_detect_extensions(&cpu);
+
 	return cpu;
+}
+
+/**
+ * Detects the CPU extensions that this processor supports, and fills in a CPU
+ * struct.
+ */
+static void cpuid_detect_extensions(x86_cpu_t *cpu) {
+	unsigned int ecx, edx, unused;
+	cpuid(0x0000001, unused, unused, ecx, edx);
+
+	// APIC and such things
+	cpu->extensions.apic = edx & (1 << 9);
+
+	// PAE
+	cpu->extensions.pae = edx & (1 << 6);
+
+	// MMX/SSE
+	cpu->extensions.mmx = edx & (1 << 23);
+	cpu->extensions.sse1 = edx & (1 << 25);
+	cpu->extensions.sse2 = edx & (1 << 26);
 }

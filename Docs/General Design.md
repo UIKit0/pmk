@@ -46,6 +46,8 @@ It is important to remember that if a program requests 16M of mapping IPC space,
 
 Accesses past these initial allocated pages cause a page fault that the kernel handles by allocating more free pages, until it either runs out of pages, or until the entire space is mapped.
 
+As far as resource statistics are concerned, the entirety of the physical memory cost for a shared memory window is tallied on the process that initially created the mapping window—i.e. the first one to request it.
+
 ### Commonalities Between All IPC Types
 Despite the different ways that the different types of IPC work, they all have some commonalities.
 
@@ -58,3 +60,8 @@ Note that `EAX` will be cleared to 0 if there is no error and the message was de
 All IPC is synchronous, and does not provide custom control over timeouts. Instead, a process can request to either fail IPC immediately if the other party is not ready, or wait (thread is blocked) indefinitely until the other party becomes available. 
 
 This status is signified with the 30th bit of the thread ID. When set to 1, infinite timeout is used.
+
+# Virtual Memory
+Virtual memory is handled in a platform-agnostic way by the virtual memory manager.
+
+# Scheduling
