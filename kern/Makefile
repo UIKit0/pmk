@@ -46,7 +46,7 @@ export ASFLAGS
 export CPPFLAGS
 
 # Subdirectories with makefiles
-SUBDIRS=boot stdlib pexpert vm $(PLATFORM)
+SUBDIRS=boot stdlib pexpert vm scheduler $(PLATFORM)
 .PHONY: subdirs $(SUBDIRS)
 
 SUBDIRS_CLEAN=$(addsuffix _clean, $(SUBDIRS))

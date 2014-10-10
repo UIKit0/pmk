@@ -9,10 +9,12 @@
 #include "rmc.h"
 #include "xchg.h"
 
-// An atomic integer structure thingie
+// An atomic integer structure
 typedef struct {
 	int counter;
 } atomic_t;
+
+typedef atomic_t mutex_t;
 
 /*
  * Read atomic variable
@@ -129,19 +131,50 @@ static inline int atomic_xchg(atomic_t *v, int new) {
 /*
  * Adds to the atomic, unless it is already a specific value.
  *
- * Atomically adds @a to @v, so long as @v was not already @u.
+ * Atomically adds @addend to @v, so long as @v was not already @u.
  * @return Old value of the atomic
  */
 static inline int atomic_add_unless(atomic_t *v, int addend, int u) {
-        int c, old;
-        c = atomic_read(v);
-        for (;;) {
-                if (unlikely(c == (u)))
-                        break;
-                old = atomic_cmpxchg((v), c, c + (addend));
-                if (likely(old == c))
-                        break;
-                c = old;
-        }
-        return c;
+	int c, old;
+	c = atomic_read(v);
+
+	for (;;) {
+		if (unlikely(c == (u)))
+			break;
+		
+		old = atomic_cmpxchg((v), c, c + (addend));
+		
+		if (likely(old == c))
+			break;
+		
+		c = old;
+	}
+
+	return c;
+}
+
+/**
+ * Attempts to take a mutex. If the mutex could not be taken, returns -1.
+ */
+static inline int mutex_take(mutex_t *m) {
+	if(atomic_read(m)) {
+		return -1;
+	} else {
+		atomic_xchg(m, 1);
+		return 0;
+	}
+}
+
+/**
+ * Attempts to take a mutex. Spins until the mutex can be taken.
+ */
+static inline void mutex_take_spin(mutex_t *m) {
+	while(mutex_take(m) != 0);
+}
+
+/**
+ * Gives a mutex. This will always succeed, even if the mutex was not taken.
+ */
+static inline void mutex_give(mutex_t *m) {
+	atomic_xchg(m, 0);
 }

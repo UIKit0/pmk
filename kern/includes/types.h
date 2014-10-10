@@ -5,6 +5,10 @@ extern "C" {
 #ifndef TYPES_H
 #define TYPES_H
 
+// These tell gcc how to optimise branches since it's stupid
+#define likely(x)	__builtin_expect(!!(x), 1)
+#define unlikely(x)	__builtin_expect(!!(x), 0)
+
 #if !defined(__cplusplus)
 #include <stdbool.h>
 #endif
@@ -24,9 +28,8 @@ extern "C" {
 #include "types/list.h"
 #include "types/ordered_array.h"
 
-// These tell gcc how to optimise branches since it's stupid
-#define likely(x)    __builtin_expect(!!(x), 1)
-#define unlikely(x)  __builtin_expect(!!(x), 0)
+// locks and friends
+#include "stdlib/locks.h"
 
 // Logging
 #include "pexpert/logging.h"

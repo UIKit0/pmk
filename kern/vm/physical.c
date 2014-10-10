@@ -101,6 +101,9 @@ void vm_init_phys_allocator(uintptr_t bytes) {
 uintptr_t vm_allocate_phys(void) {
 	uintptr_t page = find_free_frame();
 	page *= PAGE_SIZE;
+
+	set_frame(page);
+
 	return page;
 }
 

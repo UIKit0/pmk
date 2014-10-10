@@ -2,6 +2,7 @@
 
 #include "pexpert/platform.h"
 #include "vm/vm.h"
+#include "scheduler/scheduler.h"
 
 // Linker defines
 extern uint32_t BUILD_NUMBER;
@@ -17,17 +18,14 @@ void kmain(void) {
 	// Initialise paging and VM subsystem
 	vm_init();
 
-	KINFO("PMK %s (build %u): Copyright 2014 Tristan Seifert.\n", KERNEL_VERSION, (unsigned int) &BUILD_NUMBER);
+	// print some info
+	KINFO("PMK %s (build %u): Copyright 2014 Tristan Seifert <t@tseifert.me>. All rights reserved.\n", KERNEL_VERSION, (unsigned int) &BUILD_NUMBER);
+	KDEBUG("Loading IO services from RAM disk...\n");
 
 	// Load any additional drivers from RAM disk
-//	unsigned int d = 0xdead;
-//	unsigned int b = d / 0;
-//	KDEBUG("%u", b);
-
-//	uint32_t *cube = (uint32_t *) 0xDEADBEEF;
-//	KINFO("potato: %u\n", (unsigned int) *cube);
 
 	// Initialise scheduler
+	scheduler_init();
 
 	// Start driver and initialisation processes
 
