@@ -1,5 +1,5 @@
 # Panzer MicroKernel
-A simple microkernel-based operating system with a twist.
+A simple microkernel-based operating system with a twist. (i.e. it's not really a microkernel. Surprise!)
 
 ## License
 The source code is released under the BSD license.
