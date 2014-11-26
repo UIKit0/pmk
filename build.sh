@@ -14,6 +14,13 @@ else
 	exit
 fi
 
+echo "\n[3;32;40m***** Building RAM disk *****[0;37;49m"
+
+# Create an the RAM disk
+rm -rf ramdisk/.DS_Store
+dot_clean -m ramdisk/
+./tool/mkramdisk ramdisk
+
 # Copy kernel, etc
 echo "\n[3;32;40m***** Copying files *****[0;37;49m"
 
@@ -21,8 +28,12 @@ echo "\n[3;32;40m***** Copying files *****[0;37;49m"
 hdiutil attach ./hdd.img
 
 # Copy files
-rm -f /Volumes/PMK/boot/kernel.elf
-cp kern/kernel_stripped.elf /Volumes/PMK/boot/kernel.elf
+echo ""
+cp -v kern/kernel_stripped.elf /Volumes/PMK/boot/kernel.elf
+cp -v initrd.gz /Volumes/PMK/boot/initrd.gz
+
+# Clean up some files
+rm initrd.bin initrd.gz
 
 # Clean up OS X's crap
 rm -rf /Volumes/PMK/.fseventsd

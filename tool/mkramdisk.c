@@ -1,5 +1,5 @@
 /*
- * Tool to generate a compressed TSOS ramdisk.
+ * Tool to generate a compressed PMK ramdisk.
  *
  * This automagically aligns the files within the ramdisk to page (4K) bounds,
  * as to make the processing within the kernel easier. This can lead to some

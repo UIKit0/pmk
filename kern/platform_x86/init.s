@@ -55,6 +55,11 @@ _osentry:
 	mov		$(boot_page_directory - 0xC0000000), %ecx
 	mov		%ecx, %cr3
 
+	# Enable 4MB pages
+	mov		%cr4, %ecx
+	or		$0x00000010, %ecx
+	mov		%ecx, %cr4
+
 	# Enable paging
 	mov		%cr0, %ecx
 	or		$0x80000000, %ecx
@@ -173,7 +178,9 @@ stack_top:
 # To boot the system with paging, we need pagetables. These tables mirror the
 # first 8MB of memory space throughout the entirety of the address space.
 #
-# These tables are only needed to boot the kernel: they are discarded afterward
+# These tables are only needed to boot the kernel: they are discarded afterward.
+#
+# To make life easy, we use the 4MB pages that the page table supports. Woo!
 #
 .section .entry.data
 
@@ -201,3 +208,7 @@ boot_page_directory:
 	.long (boot_page_table - 0xC0000000) + 0x07
 	.long (boot_page_table2 - 0xC0000000) + 0x07
 	.endr
+
+.align 0x20
+boot_page_dir_table:
+	.quad 0, 0, 0, 0

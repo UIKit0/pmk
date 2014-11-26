@@ -33,8 +33,6 @@ void vm_init(void) {
 	vm_state.mem_total = bootargs->total_mem * 1024;
 	vm_state.mem_used = 0;
 
-	KDEBUG("Available RAM: %lu bytes\n", vm_state.mem_total);
-
 	// initialise the physical manager
 	vm_init_phys_allocator(vm_state.mem_total);
 
@@ -96,6 +94,8 @@ void vm_init(void) {
 	uintptr_t c = (uintptr_t) kmalloc(0x2320);
 	uintptr_t d = (uintptr_t) kmalloc(0x20);
 	KINFO("%X %X\n", (unsigned int) c, (unsigned int) d);*/
+
+	KINFO("Available RAM: %luK\n", vm_state.mem_total / 1024);
 }
 
 /**

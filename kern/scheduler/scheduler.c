@@ -95,7 +95,7 @@ void scheduler_init(void) {
 	unsigned int nframes = (TCB_END + 1) - TCB_START;
 	nframes /= 0x1000;
 
-	KDEBUG("Scheduler supports %u threads max\n", nframes);
+	KDEBUG("Scheduler supports %u threads max (sizeof(scheduler_tcb_t) = %u)\n", nframes, (unsigned int) sizeof(scheduler_tcb_t));
 
 	frames = (unsigned int *) kmalloc(INDEX_FROM_BIT(nframes));
 	memclr(frames, INDEX_FROM_BIT(nframes));

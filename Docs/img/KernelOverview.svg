@@ -85,56 +85,45 @@ AAAKAB4ALAABREZMVAAIAAQAAAAA//8AAQAAAAFrZXJuAAgAAAABAAAAAQAEAAIAAAABAAgAAQBi\
 AAQAAAADABAALgBEAAcAEf/JABT/yQAXAAoAG//JABz/2wAf/9sAIv/uAAUAEf/bABT/7gAb/+4A\
 HP/uAB//7gAHABL/7gAT/+4AFP/uABX/7gAZABIAGgASABv/7gABAAMADgAPABw=")}
 @font-face{font-family:'DINCondensed-Bold';src:url("data:;base64,\
-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")}
+T1RUTwADACAAAQAQQ0ZGIMoWtf8AAAC4AAAGv0dQT1OwC79aAAAHeAAAAGhjbWFwAiQC0wAAADwA\
+AAB8AAAAAQAAAAMAAAAMAAQAcAAAABgAEAADAAgAIABLAFMAVQBhAGMAZQBsAG4AcABz//8AAAAg\
+AEsAUwBVAGEAYwBlAGwAbgBwAHL////h/7f/sP+v/6T/o/+i/5z/m/+a/5kAAQAAAAAAAAAAAAAA\
+AAAAAAAAAAAAAAAAAAEABAIAAQEBEkRJTkNvbmRlbnNlZC1Cb2xkAAEBASH4GwH4FAT4HAwV+zn7\
+jvp8+j0F6Q/3CxD3DRGRHAa5EgACAQELGERJTlNjaHJpZnQvRlNUeXBlIDQgZGVmAAAAAAEALAA0\
+ADYAQgBEAEYATQBPAFEAUwBUAAAADQIAAQBCAEMAbAGEAd8CrQNQA/0ELgSABQ8FSwYi9wf5UAT4\
+iP1Q/IgG+Dj5HhX76Ab3PvuTBfdc+8AV+JIH+z77kwX3IPvAFfs+95P7PvuTBW24Ffc+95P7PveT\
+BQ4OtLv5XBXx+9mNBvcp99kF8Qb7H/ux9zn8PwX7AAb7CPfQVCQF+2klBw6g+A74jxUlogaihqCA\
+nB6cgHiTcRt9gIiGgh+ChoSEhoOGgoeCiYAIiYCKf38afYx/jIIejIGNg4+Ej4SRhJOGkoaWhZiG\
+2WwYooKdgZmAmX+WfZN8knuQeY53CI52jHRxGm2Ib4VyHoVxgXV+eX14eX10gAiAdHCGahtydI+U\
+dh92lHiXfJp8mn+cgqAIgqCGoaMasfFrB3iRe5Z8HnyWnYOlG5yZjpCVH5SQk5KQlJCUjpaMmAiM\
+mIyamxqeipqKlx6Kl4iVh5KGkoWRhJCDkIGQfpBCqRhfnW6jfKkIfKiDsLgapo+kkqMekqOWoJqc\
+mZydmaGWCJWhpZCoG6SjhoKgH6CCnX6afJp8lnqTeAiTeI93dxoOtPgO9zQVdId1gncegneAenx8\
+fHx5f3eCCIJ3dod0G3R2j5R3H3eUepd8mnyaf5yCnwiCn4ehohr4vPH8sgdykXiXfx5/l5qFnRud\
+mpGXlx+Xl5GepBr4svEHDnz3f78ViQZ+eH19foEIgX14hnIbf3+Nj34ffo6AkoCVgJSCmYSdCISc\
+h6KnGqiNpJChHpCgk52YmpeZm5agkgiSoKWOqxuSk4uKkh+SipSLlooIwAech5qElh6WhH2ReBt+\
+f4eCgB+AgoN/iHoIKAaOuZuwpqaYmJuWnpMIkp6gj6IboJ+IhJ4fnoSbgZl+mH6WepN3CJN3j3Rw\
+Gvv1JQf3bgSNgIGMhBt1eIaBfB97gIN4cBp4kHuUfx5/lJiFnBucmZGWlR+UlpCboBoOfPcq9yYV\
+e5B/lIIegpSXh5obnpiRlpIfkZaPl4yWCPEGdoh3hHgehHiAe35+fn17gHiDCIN4dod0G2xwkph0\
+H3SYep1/oYSYhpuInAiInIqeoBr3OwegjJ6OnB6OnJCbkpiXoZydopgImKKmkqoboqGHg54fnoOb\
+gJh9mHyVepJ3CJJ3jnV0GiUGoIeagpUelIJ+kHwbfH+GgoIfgoGGfHgaDnz3G/drFUYHe5B/lIIe\
+gpSXh5obnpiRlpIfkZaPl4yWCPEGdoh3hHgehHiAe35+fn17gHiDCIN4dod0G2xwkph0H3SYep1/\
+oYSYhpuInAiInIqeoBr3OwegjJ6OnB6OnJCbkpiXoZydopgImKKmkqoboqGHg54fnoObgJh9mHyV\
+epJ4CJJ4jnZ1GvsgB/te2xXvxQaeh5qClR6Ugn6QfBt8f4aCgh+CgYZ8eBoOr/lcFfH8zQZ4j36S\
+hB6ShJiGnokIKwd0do2PeB94jnuSfpZ+lYGZhJ4IhJ6Ho6gaDo+1+I8V8VqNBpabmJialgiVmp6Q\
+ohuYl4mHmB+YhpaElYGVgZN+kXwIkXuOeHQa/Bkl9/MHnoeZgpYeloJ/kHsbeH2Ff4QfhH+HenQa\
+++klBw6PtfiPFfFdBpiamJeYlQiVmJ+QpBu1qXtrnB+RgI99jnoIjnqMdW8a+1UHZopwiXoeiXqH\
+fYSAgn6AgH6CCIJ9eIdyG3d5kJR8H3uUfZeAnAiJ+48lBvdf+LcVoIebg5gemIN+kXobfH6FgIIf\
+gn+GfHga+1kHe5B+lYEegJSXhpobnpmRl5IfkpeOmZsaDiC1+I8V8VUGoJ6fmZ+WCJafpJCoG/sA\
+B4+BgY2AG4CAiYh/H36HgIWBgoCCg4CEfQiEfYh6dhr7wSUHDmr3d/gBFYqchpiBlAiUgH+Pfht7\
+f4aBgh+CgId/fhqCjYKQgh6QgpeCnoTHcxixfKV3mnIImXKSb20adod3hHkeg3iAe359fn17gHiD\
+CIN4d4d1G3d4jpJ5H3mSe5R+mH2YgJuCnoKeh6GKpAjrBo19kH6Tfwh/kpmFnhuamJCVlx+WlJGZ\
+nBqZh5eElR6ElX2UeJJanRhrl3KdeaMIeKKCqK0aoI+fk54ek52Wm5mYmJiblZ2SCJKdno+gG6Ce\
+h4SdH5yDmoGYfph+lXuSeQiSeI94dhoO904U+BUVAAABAAAACgAeACwAAURGTFQACAAEAAAAAP//\
+AAEAAAABa2VybgAIAAAAAQAAAAEABAACAAAAAQAIAAEAJgAEAAAAAwAQABYAHAABAAf/9AABAAj/\
+9AACAAX/+gAG//QAAQADAAIABgAL")}
 ]]>
 </style>
-<rect x="-1" y="350" fill="#E6E6E6" width="960" height="237"/>
+<rect x="-1" y="236" fill="#E6E6E6" width="960" height="351"/>
 <rect x="30" y="464" fill="#3FA9F5" width="920" height="114"/>
 <text transform="matrix(1 0 0 1 418.5249 527.0879)" font-family="'Avenir-Black'" font-size="31">Hardware</text>
 <rect x="30" y="350" fill="#7AC943" width="307" height="114"/>
@@ -145,11 +134,8 @@ AAMABv/6AAf/9AARABIAAgAG//oACf/6AAEABwACAAMABgAHAAkADwAR")}
 <line fill="none" stroke="#4D4D4D" stroke-miterlimit="10" x1="643.5" y1="350" x2="643.5" y2="464"/>
 <text transform="matrix(1 0 0 1 376.3345 413.4659)" font-family="'Avenir-Black'" font-size="31">Virtual Memory</text>
 <text transform="matrix(1 0 0 1 717.1777 413.4659)" font-family="'Avenir-Black'" font-size="31">Scheduling</text>
-<rect x="8" y="349" fill="none" width="23" height="238"/>
-<text transform="matrix(0 -1 1 0 22.2397 509.0991)" font-family="'DINCondensed-Bold'" font-size="20">Kernel Space</text>
-<rect x="-1" y="236" fill="#F2F2F2" width="960" height="114"/>
-<rect x="8" y="234" fill="none" width="22" height="115"/>
-<text transform="matrix(0 -1 1 0 22.2397 322.6294)" font-family="'DINCondensed-Bold'" font-size="20">Privileged</text>
+<rect x="8" y="236" fill="none" width="22" height="351"/>
+<text transform="matrix(0 -1 1 0 22.2397 452.5991)" font-family="'DINCondensed-Bold'" font-size="20">Kernel Space</text>
 <rect x="8" y="6" fill="none" width="22" height="228"/>
 <text transform="matrix(0 -1 1 0 22.2398 155.1694)" font-family="'DINCondensed-Bold'" font-size="20">User Space</text>
 <rect x="30" y="236" fill="#FF931E" width="230" height="114"/>

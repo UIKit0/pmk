@@ -63,36 +63,41 @@
 		</style>
 	</head>
 	<body>
-		<h1>PMR Kernel Memory Layout</h1>
+		<h1>PMK Kernel Memory Layout</h1>
 		<table>
-			<tr style="height: 225px">
-				<td><div>0x00000000</div><div>0xCFFFFFFF</div></td>
+			<tr style="height: 275px">
+				<td><div>0x00000000</div><div>0xBFFFFFFF</div></td>
 				<td class="unmapped">Userspace</td>
 				<td>3328M</td>
 			</tr>
-			<tr style="height: 60px">
-				<td><div>0xD0000000</div><div>0xD2FFFFFF</div></td>
+			<tr style="height: 45px">
+				<td><div>0xC0000000</div><div>0xC1FFFFFF</div></td>
 				<td class="code"><span>.text</span>, <span>.rodata</span></td>
-				<td>48M</td>
+				<td>32M</td>
 			</tr>
-			<tr style="height: 50px">
-				<td><div>0xD3000000</div><div>0xD3FFFFFF</div></td>
-				<td class="bss">IPC Map Area</td>
+			<tr style="height: 35px">
+				<td><div>0xC2000000</div><div>0xC2FFFFFF</div></td>
+				<td class="stack">Pagetables</td>
 				<td>16M</td>
 			</tr>
-			<tr style="height: 80px">
-				<td><div>0xD4000000</div><div>0xDFFFFFFF</div></td>
-				<td class="data">Thread Control Blocks</td>
-				<td>191M</td>
+			<tr style="height: 35px">
+				<td><div>0xC3000000</div><div>0xC3FFFFFF</div></td>
+				<td class="bss">IPC Mapping Area</td>
+				<td>16M</td>
 			</tr>
-			<tr style="height: 100px">
-				<td><div>0xE0000000</div><div>0xEFFFFFFF</div></td>
+			<tr style="height: 55px">
+				<td><div>0xC4000000</div><div>0xC7FFFFFF</div></td>
+				<td class="code">Kernel Drivers</td>
+				<td>64M</td>
+			</tr>
+			<tr style="height: 115px">
+				<td><div>0xC8000000</div><div>0xEFFFFFFF</div></td>
 				<td class="data">Kernel Heap</td>
-				<td>256M</td>
+				<td>639M</td>
 			</tr>
-			<tr style="height: 100px">
+			<tr style="height: 75px">
 				<td><div>0xF0000000</div><div>0xFFFFFFFF</div></td>
-				<td class="unmapped">Platform Reserved</td>
+				<td class="unmapped">Platform/MMIO</td>
 				<td>256M</td>
 			</tr>
 		</table>

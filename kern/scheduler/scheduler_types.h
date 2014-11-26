@@ -63,6 +63,9 @@ struct scheduler_tcb {
 	// singly linked list of threads: terminated by NULL
 	scheduler_tcb_t *next;
 
+	// kernel-mode stack
+	uint8_t kernel_stack[256];
+
 	// platform reserved use
 	uint8_t platform[1024];
 };

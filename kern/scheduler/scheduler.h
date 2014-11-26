@@ -7,6 +7,8 @@
 #define	TCB_START	0xC4000000
 #define	TCB_END		0xCFFFFFFF
 
+#define MAX_THREADS	4096
+
 /**
  * Initialises the scheduler. This sets up several required data structures and
  * memory segments, and sets up the scheduler to be ready to begin executing.

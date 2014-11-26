@@ -1,13 +1,14 @@
 # Platform Independence
 PMK is written in a platform agnostic manner. This enables it to (in theory) be compiled for many diverse platforms, relying only on a few platform-specific functions to enable it to interact with the hardware.
 
-To make this entire system actually work, the kernel exports a set of functions that platform modules are expected to implement. These functions can be grouped into several major categories:
+To make this entire system actually work, the kernel exports a set of functions that platform modules (analogous to a HAL, or Hardware Abstraction Layer) are expected to implement. These functions can be grouped into several major categories:
 
 * Platform initialization
 * Context switching
 * Physical Memory Manager (PM)
 * Interrupt Management
 * Bootup Console
+* Basic I/O Routines
 
 ## Platform Initialization
 Platform initialization is heavily dependent on both the hardware platform, as well as the manner in which the kernel is loaded. This removes the requirement to use a specific bootloader, as the platform module can dictate the manner in which the kernel is loaded, and deal with these specifies to set up a consistent environment.
@@ -15,6 +16,9 @@ Platform initialization is heavily dependent on both the hardware platform, as w
 In most cases, the platform initialization code is written in assembly, and puts the processor into the correct modes, enables features, and sets up paging. After these tasks are complete, it will jump into the kernel's own main function to complete setup.
 
 Additionally, the initialization code is always the first code to appear in the file, regardless of output file type: it is placed in its own section, `.entry`, which is placed before `.text`.
+
+### Relevant Functions
+See `pexpert/platform_init.h` for prototypes of the functions required.
 
 ## Context Switching
 Due it the variations in processor architectures, it is impossible for PMK to handle this in a platform-agnostic manner. PMK reserves 1K in each thread's TCB for thread context state, but it is up to the platform module to define how it is used.
@@ -36,6 +40,9 @@ Threads' state is represented by a Thread Control Block, in which information ab
 
 Memory for the TCBs is allocated and managed by the kernel—in memory from `0xD4000000` to `0xDFFFFFFF`, allowing for a total of 49,152 threads. Each TCB requires 4K of memory, so it is page aligned.
 
+#### Relevant Functions
+See `pexpert/platform_ctxswitch.h` for prototypes of the functions required.
+
 ## Physical Memory Manager
 PMK requires hardware support for protected memory, usually provided by an MMU on the chip. Since different processor architectures implement memory mapping in different ways, the actual management of the memory maps (page tables on x86) is relegated to the platform module.
 
@@ -53,6 +60,9 @@ When a page fault is raised by the MMU, the platform handler catches it, saves p
 * If a supervisor mode page is attempted to be accessed from user space (this is the kernel map—usually upwards from `D0000000`) the virtual memory manager signals a privilege violation, which usually results in a segmentation fault.
 
 Depending in the action needed to be taken, the physical memory manager calls into the appropriate virtual memory manager functions, which handle the request appropriately. 
+
+#### Relevant Functions
+See `pexpert/platform_paging.h` for prototypes of the functions required.
 
 ## Interrupt Management
 Another low-level aspect that the kernel needs to interact with are processor interrupts and exceptions. The core of asynchronous interfacing with peripherals is the ability to be signalled when it completes its own  tasks—which is signalled by an interrupt. Yet another important aspect of a multitasking OS is it's ability to respond (and take corrective action) to processor exceptions, without jeopardising overall system stability. 
@@ -74,6 +84,9 @@ By default, the kernel exposes functions to handle most basic processor exceptio
 On some platforms, such as x86, "privilege violation" exceptions have to be handled specially to allow legacy BIOS code to be executed. In this case, the platform's exception handler would check what mode the CPU was in, and either emulate the instruction, or send a signal to the thread that issued the instruction. This is intended to be used to run BIOS code.
 
 Threads all have default signal handlers, which will either ignore the signal, or terminate the process by default. However, these are not fixed—they can be changed on a per-thread basis.
+
+#### Relevant Functions
+See `pexpert/platform_interrupt.h` for prototypes of the functions required.
 
 ## Console
 The bootup kernel console can be done in various ways. For debugging, platform modules should provide a console that displays arbitrary text output on the screen.
@@ -100,3 +113,17 @@ However the screen is implemented, remember that simplicity is key—options sho
 Regardless of how the bootup progress screen is implemented, it is important that the user is informed of any issues that prevent the kernel from booting successfully. 
 
 These conditions are indicated by the kernel through a panic. Platform modules are informed of kernel panics, with information to help debug the issue. Usually, this information should be written to the graphical output in a prevalent manner—for example, a black overlay could appear, with the panic message atop it in red text.
+
+##### Relevant Functions
+See `pexpert/platform_console.h` for prototypes of the functions required.
+
+## Basic I/O Routines
+Since mechanisms to access a device's IO space are different from platform to platform, the platform driver can expose an (optional) set of functions for accessing IO space. Drivers may use these functions, given that they check for their availability first.
+
+If a system does not have a separate IO space (such as with many embedded applications relying on non-x86 architectures), these functions can simply be omitted. This requires that generic drivers have other means of accessing IO peripherals. Even if a driver is compiled for the same CPU architecture as the current system, its means of accessing IO peripherals may be completely different.
+
+### Driver Support
+Drivers can probe whether the current platform has a separate IO space by calling `platform_io_properties` and checking for the `kPlatformIOSpaceExists` bit.
+
+### Relevant Functions
+See `pexpert/platform_io.h` for prototypes of the functions required.

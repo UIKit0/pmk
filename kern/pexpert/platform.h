@@ -29,6 +29,9 @@ extern const char *platform_name;
 /// Paging
 #include "platform_paging.h"
 
+/// IO Space access
+#include "platform_io.h"
+
 /// Platform defines
 #include CURRENT_PLATFORM_HEADER
 
